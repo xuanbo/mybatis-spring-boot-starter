@@ -4,13 +4,13 @@
 
 ## 依赖
 
-还未发布到 maven 公共仓库
+已发布到 maven 公共仓库
 
 ```xml
 <dependency>
     <groupId>tk.fishfish</groupId>
     <artifactId>mybatis-spring-boot-starter</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.RELEASE</version>
 </dependency>
 ```
 
