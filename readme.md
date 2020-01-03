@@ -4,13 +4,11 @@
 
 ## 依赖
 
-已发布到 maven 公共仓库
-
 ```xml
 <dependency>
     <groupId>tk.fishfish</groupId>
     <artifactId>mybatis-spring-boot-starter</artifactId>
-    <version>1.0.0.RELEASE</version>
+    <version>1.0.1.RELEASE</version>
 </dependency>
 ```
 
