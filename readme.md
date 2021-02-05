@@ -5,16 +5,15 @@
 ## 依赖
 
 ```xml
+
 <dependency>
     <groupId>tk.fishfish</groupId>
     <artifactId>mybatis-spring-boot-starter</artifactId>
-    <version>1.0.1.RELEASE</version>
+    <version>1.1.0.RELEASE</version>
 </dependency>
 ```
 
 ## 使用
-
-排除`org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration`
 
 ### 配置
 
@@ -22,15 +21,15 @@
 
 - mybatis
 
-    mybatis官方配置
+  mybatis 官方配置
 
 - mybatis.page-helper
 
-    pagehelper配置
+  pagehelper 配置
 
 - mybatis.mapper
 
-    mapper配置
+  通用 mapper 配置
 
 示例：
 
@@ -54,3 +53,28 @@ mybatis:
       - tk.fishfish.mybatis.repository.Repository
     not-empty: true
 ```
+
+## 版本
+
+### 1.1.0.RELEASE
+
+修改：
+
+- 升级依赖
+- 实体主键类型从 Long 调整为 String
+
+版本：
+
+- Spring Boot 2.3.7.RELEASE
+- MyBatis Spring Boot Starter 2.1.3
+- PageHelper 5.2.0
+- Mapper 4.1.5
+
+### 1.0.1.RELEASE
+
+项目初始化
+
+- Spring Boot 2.1.2.RELEASE
+- MyBatis Spring Boot Starter 2.0.1
+- PageHelper 5.1.10
+- Mapper 4.1.5

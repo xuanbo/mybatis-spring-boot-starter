@@ -42,13 +42,13 @@ public interface BaseService<T extends Entity> {
      * @param id 主键
      * @return 实体
      */
-    T find(Long id);
+    T findById(String id);
 
     /**
      * 删除
      *
      * @param id 主键
      */
-    void delete(Long id);
+    void deleteById(String id);
 
 }

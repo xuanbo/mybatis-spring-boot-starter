@@ -1,7 +1,6 @@
 package tk.fishfish.mybatis.entity;
 
 import lombok.Data;
-import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -16,7 +15,6 @@ import java.io.Serializable;
 public class Entity implements Serializable {
 
     @Id
-    @KeySql(useGeneratedKeys = true)
-    private Long id;
+    private String id;
 
 }

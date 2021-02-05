@@ -2,6 +2,7 @@ package tk.fishfish.mybatis.autoconfigure;
 
 import com.github.pagehelper.PageInterceptor;
 import org.apache.ibatis.plugin.Interceptor;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import java.util.Properties;
  * @since 1.0
  */
 @Configuration
+@AutoConfigureBefore(org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration.class)
 public class PageHelperAutoConfiguration {
 
     private static final String PAGE_HELPER_PREFIX = "mybatis.page-helper";

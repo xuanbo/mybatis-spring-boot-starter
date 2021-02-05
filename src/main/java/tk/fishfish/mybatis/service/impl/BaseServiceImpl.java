@@ -35,7 +35,7 @@ public abstract class BaseServiceImpl<T extends Entity> implements BaseService<T
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(T entity) {
-        Long id = entity.getId();
+        String id = entity.getId();
         if (id == null) {
             repository.insertSelective(entity);
         } else {
@@ -44,13 +44,13 @@ public abstract class BaseServiceImpl<T extends Entity> implements BaseService<T
     }
 
     @Override
-    public T find(Long id) {
+    public T findById(String id) {
         return repository.selectByPrimaryKey(id);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(Long id) {
+    public void deleteById(String id) {
         repository.deleteByPrimaryKey(id);
     }
 
