@@ -30,6 +30,20 @@ public interface BaseService<T extends Entity> {
     PageInfo<T> page(T entity, IPage page);
 
     /**
+     * 新增
+     *
+     * @param entity 实体
+     */
+    void insert(T entity);
+
+    /**
+     * 更新
+     *
+     * @param entity 实体
+     */
+    void update(T entity);
+
+    /**
      * 新增或更新
      *
      * @param entity 实体

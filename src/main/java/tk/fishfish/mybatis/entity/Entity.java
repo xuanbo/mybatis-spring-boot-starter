@@ -18,3 +18,4 @@ public class Entity implements Serializable {
     private String id;
 
 }
+

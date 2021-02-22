@@ -56,6 +56,19 @@ mybatis:
 
 ## 版本
 
+### 1.2.0.RELEASE
+
+修改：
+
+- 新增 Base Controller
+
+版本：
+
+- Spring Boot 2.3.7.RELEASE
+- MyBatis Spring Boot Starter 2.1.3
+- PageHelper 5.2.0
+- Mapper 4.1.5
+
 ### 1.1.0.RELEASE
 
 修改：
@@ -70,9 +83,15 @@ mybatis:
 - PageHelper 5.2.0
 - Mapper 4.1.5
 
-### 1.0.1.RELEASE
+### 1.0.0.RELEASE
 
 项目初始化
+
+- 集成 PageHelper
+- 集成 Mapper
+- 新增 Base Service
+
+版本：
 
 - Spring Boot 2.1.2.RELEASE
 - MyBatis Spring Boot Starter 2.0.1

@@ -9,6 +9,8 @@ import tk.fishfish.mybatis.entity.Entity;
 import tk.fishfish.mybatis.repository.Repository;
 import tk.fishfish.mybatis.service.BaseService;
 
+import java.util.UUID;
+
 /**
  * 通用服务实现
  *
@@ -34,9 +36,23 @@ public abstract class BaseServiceImpl<T extends Entity> implements BaseService<T
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public void insert(T entity) {
+        entity.setId(generateId());
+        repository.insertSelective(entity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(T entity) {
+        repository.updateByPrimaryKeySelective(entity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void save(T entity) {
         String id = entity.getId();
         if (id == null) {
+            entity.setId(generateId());
             repository.insertSelective(entity);
         } else {
             repository.updateByPrimaryKeySelective(entity);
@@ -52,6 +68,15 @@ public abstract class BaseServiceImpl<T extends Entity> implements BaseService<T
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
         repository.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 生成主键
+     *
+     * @return 主键
+     */
+    protected String generateId() {
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
 }
