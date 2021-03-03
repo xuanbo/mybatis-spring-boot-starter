@@ -9,11 +9,11 @@
 <dependency>
     <groupId>tk.fishfish</groupId>
     <artifactId>mybatis-spring-boot-starter</artifactId>
-    <version>1.1.0.RELEASE</version>
+    <version>1.2.0.RELEASE</version>
 </dependency>
 ```
 
-## 使用
+## 快速使用
 
 ### 配置
 
@@ -54,7 +54,127 @@ mybatis:
     not-empty: true
 ```
 
+### entity
+
+定义实体，字段默认驼峰转下划线策略。
+
+```java
+
+@Data
+@Table(name = "oh_user")
+@EqualsAndHashCode(callSuper = true)
+public class User extends Entity {
+
+    private String name;
+
+    private String username;
+
+    private String password;
+
+    private Integer sex;
+
+    private String email;
+
+    private String departmentId;
+
+    private Date createdAt;
+
+    private Date updatedAt;
+
+    @Transient
+    private String ignore;
+
+}
+```
+
+### condition
+
+定义查询条件。
+
+```java
+
+@Data
+public class UserCondition {
+
+    @Like(property = "username", policy = Like.Policy.LEFT)
+    private String username;
+
+    @Eq(property = "sex")
+    private Integer sex;
+
+    @Like(property = "email")
+    private String email;
+
+    @In(property = "departmentId")
+    private String[] departmentIds;
+
+}
+```
+
+其中注解的 property 为实体的字段名称，查询时会自动转换为数据库对应字段
+
+### repository
+
+底层为 tk mapper 通用数据库 CRUD 方法
+
+```java
+
+@Mapper
+public interface UserRepository extends Repository<User> {
+}
+```
+
+### service
+
+业务层继承通用的服务
+
+```java
+public interface UserService extends BaseService<User> {
+}
+```
+
+```java
+
+@Service
+public class UserServiceImpl extends BaseServiceImpl<User> implements UserService {
+}
+```
+
+### controller
+
+继承部分通用 API 接口
+
+```java
+
+@RestController
+@RequestMapping("/v1/user")
+@RequiredArgsConstructor
+public class UserController extends BaseController<User> {
+
+    private final UserService userService;
+
+    @PostMapping("/page")
+    public Page<User> page(@RequestBody Query<UserCondition> query) {
+        return userService.page(query.getCondition(), query.getPage());
+    }
+
+}
+```
+
 ## 版本
+
+### 1.3.0-SNAPSHOT
+
+修改：
+
+- 新增 Condition 查询
+
+版本：
+
+- Spring Boot 2.3.7.RELEASE
+- MyBatis Spring Boot Starter 2.1.3
+- PageHelper 5.2.0
+- Mapper 4.1.5
 
 ### 1.2.0.RELEASE
 

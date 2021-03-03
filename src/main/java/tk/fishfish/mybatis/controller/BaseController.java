@@ -1,6 +1,5 @@
 package tk.fishfish.mybatis.controller;
 
-import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,9 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import tk.fishfish.mybatis.domain.PageRequest;
 import tk.fishfish.mybatis.entity.Entity;
 import tk.fishfish.mybatis.service.BaseService;
+
+import java.util.List;
 
 /**
  * 通用API
@@ -45,9 +45,9 @@ public abstract class BaseController<T extends Entity> {
         service.deleteById(id);
     }
 
-    @PostMapping("/page")
-    public PageInfo<T> page(T entity, PageRequest page) {
-        return service.page(entity, page);
+    @DeleteMapping("/batch")
+    public void deleteByIds(@RequestBody List<String> ids) {
+        service.deleteByIds(ids);
     }
 
 }
