@@ -13,8 +13,14 @@ import java.io.Serializable;
 @Data
 public class Query<C> implements Serializable {
 
+    /**
+     * 查询条件
+     */
     private C condition;
 
+    /**
+     * 分页
+     */
     private PageRequest page;
 
 }

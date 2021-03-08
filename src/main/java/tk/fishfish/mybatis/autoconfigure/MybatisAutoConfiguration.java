@@ -132,7 +132,7 @@ public class MybatisAutoConfiguration {
             configuration = new org.apache.ibatis.session.Configuration();
         }
 
-        log.info("将 ibatis configuration 替换为 tk configuration，从而支持 tk mapper");
+        log.debug("将 ibatis configuration 替换为 tk configuration，从而支持 tk mapper");
         tk.mybatis.mapper.session.Configuration tkConfiguration = new tk.mybatis.mapper.session.Configuration();
         if (configuration != null) {
             BeanUtils.copyProperties(configuration, tkConfiguration);

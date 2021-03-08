@@ -199,6 +199,10 @@ public class UserController extends BaseController<User> {
 }
 ```
 
+## 示例代码
+
+[示例](src/test/java)
+
 ## 版本
 
 ### 1.3.0-SNAPSHOT
@@ -206,6 +210,7 @@ public class UserController extends BaseController<User> {
 修改：
 
 - 新增 Condition 查询
+- 枚举类型支持，通过 @EnableEnumTypes 开启
 
 版本：
 
@@ -219,7 +224,6 @@ public class UserController extends BaseController<User> {
 修改：
 
 - 新增 Base Controller
-- 枚举类型支持 @EnableEnumTypes
 
 版本：
 
