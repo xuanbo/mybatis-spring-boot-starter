@@ -14,16 +14,12 @@ import tk.fishfish.mybatis.repository.Repository;
 import tk.fishfish.mybatis.service.BaseService;
 import tk.mybatis.mapper.MapperException;
 import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.EntityColumn;
-import tk.mybatis.mapper.mapperhelper.EntityHelper;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * 通用服务实现
@@ -63,7 +59,7 @@ public abstract class BaseServiceImpl<T extends Entity> implements BaseService<T
         if (pageable == null) {
             pageable = new PageRequest();
         }
-        PageHelper.startPage(pageable, entityPropertyColumns());
+        PageHelper.startPage(pageable, entityClazz);
         PageInfo<T> info = PageInfo.of(queryFunc.get());
         return PageHelper.convert(info);
     }
@@ -90,12 +86,26 @@ public abstract class BaseServiceImpl<T extends Entity> implements BaseService<T
     @Transactional(rollbackFor = Exception.class)
     public void insert(T entity) {
         entity.setId(generateId());
+        repository.insert(entity);
+    }
+
+    @Override
+    public void insertSelective(T entity) {
+        entity.setId(generateId());
         repository.insertSelective(entity);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(T entity) {
+        if (entity.getId() == null) {
+            throw new MapperException("更新时主键必须指定");
+        }
+        repository.updateByPrimaryKey(entity);
+    }
+
+    @Override
+    public void updateSelective(T entity) {
         if (entity.getId() == null) {
             throw new MapperException("更新时主键必须指定");
         }
@@ -108,9 +118,9 @@ public abstract class BaseServiceImpl<T extends Entity> implements BaseService<T
         String id = entity.getId();
         if (id == null) {
             entity.setId(generateId());
-            repository.insertSelective(entity);
+            repository.insert(entity);
         } else {
-            repository.updateByPrimaryKeySelective(entity);
+            repository.updateByPrimaryKey(entity);
         }
     }
 
@@ -147,10 +157,6 @@ public abstract class BaseServiceImpl<T extends Entity> implements BaseService<T
      */
     protected String generateId() {
         return UUID.randomUUID().toString().replaceAll("-", "");
-    }
-
-    private Map<String, String> entityPropertyColumns() {
-        return EntityHelper.getColumns(entityClazz).stream().collect(Collectors.toMap(EntityColumn::getProperty, EntityColumn::getColumn));
     }
 
 }

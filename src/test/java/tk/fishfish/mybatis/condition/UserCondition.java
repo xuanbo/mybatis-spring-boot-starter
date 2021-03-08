@@ -1,9 +1,10 @@
 package tk.fishfish.mybatis.condition;
 
 import lombok.Data;
-import tk.fishfish.mybatis.annotation.Eq;
-import tk.fishfish.mybatis.annotation.In;
-import tk.fishfish.mybatis.annotation.Like;
+import tk.fishfish.mybatis.condition.annotation.Eq;
+import tk.fishfish.mybatis.condition.annotation.In;
+import tk.fishfish.mybatis.condition.annotation.Like;
+import tk.fishfish.mybatis.entity.enums.Sex;
 
 /**
  * 用户条件
@@ -18,7 +19,7 @@ public class UserCondition {
     private String username;
 
     @Eq(property = "sex")
-    private Integer sex;
+    private Sex sex;
 
     @Like(property = "email")
     private String email;

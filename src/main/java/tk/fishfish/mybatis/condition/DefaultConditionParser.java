@@ -1,19 +1,20 @@
 package tk.fishfish.mybatis.condition;
 
 import org.springframework.util.CollectionUtils;
-import tk.fishfish.mybatis.annotation.Eq;
-import tk.fishfish.mybatis.annotation.Gt;
-import tk.fishfish.mybatis.annotation.Gte;
-import tk.fishfish.mybatis.annotation.In;
-import tk.fishfish.mybatis.annotation.IsNotNull;
-import tk.fishfish.mybatis.annotation.IsNull;
-import tk.fishfish.mybatis.annotation.Like;
-import tk.fishfish.mybatis.annotation.Lt;
-import tk.fishfish.mybatis.annotation.Lte;
-import tk.fishfish.mybatis.annotation.NotEq;
-import tk.fishfish.mybatis.annotation.NotIn;
-import tk.fishfish.mybatis.annotation.NotLike;
+import tk.fishfish.mybatis.condition.annotation.Eq;
+import tk.fishfish.mybatis.condition.annotation.Gt;
+import tk.fishfish.mybatis.condition.annotation.Gte;
+import tk.fishfish.mybatis.condition.annotation.In;
+import tk.fishfish.mybatis.condition.annotation.IsNotNull;
+import tk.fishfish.mybatis.condition.annotation.IsNull;
+import tk.fishfish.mybatis.condition.annotation.Like;
+import tk.fishfish.mybatis.condition.annotation.Lt;
+import tk.fishfish.mybatis.condition.annotation.Lte;
+import tk.fishfish.mybatis.condition.annotation.NotEq;
+import tk.fishfish.mybatis.condition.annotation.NotIn;
+import tk.fishfish.mybatis.condition.annotation.NotLike;
 import tk.fishfish.mybatis.entity.Entity;
+import tk.fishfish.mybatis.util.ReflectUtils;
 import tk.mybatis.mapper.MapperException;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
@@ -61,7 +62,7 @@ public class DefaultConditionParser implements ConditionParser {
     }
 
     private List<FieldCondition> parseFieldCondition(Class<?> clazz) {
-        Field[] fields = clazz.getDeclaredFields();
+        Field[] fields = ReflectUtils.getFields(clazz);
         List<FieldCondition> fieldConditions = new ArrayList<>();
         for (Field field : fields) {
             Annotation[] annotations = field.getAnnotations();
@@ -97,63 +98,63 @@ public class DefaultConditionParser implements ConditionParser {
     }
 
     private void buildCriteria(Object condition, FieldCondition fieldCondition, Example.Criteria criteria) {
-        String column;
+        String property;
         Object value = getValue(condition, fieldCondition.getField());
         switch (fieldCondition.getOp()) {
             case EQ:
                 if (value != null) {
-                    column = ((Eq) fieldCondition.getAnnotation()).property();
-                    criteria.andEqualTo(column, value);
+                    property = ((Eq) fieldCondition.getAnnotation()).property();
+                    criteria.andEqualTo(property, value);
                 }
                 break;
             case NOT_EQ:
                 if (value != null) {
-                    column = ((NotEq) fieldCondition.getAnnotation()).property();
-                    criteria.andNotEqualTo(column, value);
+                    property = ((NotEq) fieldCondition.getAnnotation()).property();
+                    criteria.andNotEqualTo(property, value);
                 }
                 break;
             case GT:
                 if (value != null) {
-                    column = ((Gt) fieldCondition.getAnnotation()).property();
-                    criteria.andGreaterThan(column, value);
+                    property = ((Gt) fieldCondition.getAnnotation()).property();
+                    criteria.andGreaterThan(property, value);
                 }
                 break;
             case GTE:
                 if (value != null) {
-                    column = ((Gte) fieldCondition.getAnnotation()).property();
-                    criteria.andGreaterThanOrEqualTo(column, value);
+                    property = ((Gte) fieldCondition.getAnnotation()).property();
+                    criteria.andGreaterThanOrEqualTo(property, value);
                 }
                 break;
             case LT:
                 if (value != null) {
-                    column = ((Lt) fieldCondition.getAnnotation()).property();
-                    criteria.andGreaterThan(column, value);
+                    property = ((Lt) fieldCondition.getAnnotation()).property();
+                    criteria.andGreaterThan(property, value);
                 }
                 break;
             case LTE:
                 if (value != null) {
-                    column = ((Lte) fieldCondition.getAnnotation()).property();
-                    criteria.andGreaterThanOrEqualTo(column, value);
+                    property = ((Lte) fieldCondition.getAnnotation()).property();
+                    criteria.andGreaterThanOrEqualTo(property, value);
                 }
                 break;
             case IN:
                 if (value != null) {
-                    column = ((In) fieldCondition.getAnnotation()).property();
+                    property = ((In) fieldCondition.getAnnotation()).property();
                     if (value.getClass().isArray()) {
-                        criteria.andIn(column, Arrays.stream((Object[]) value).collect(Collectors.toList()));
+                        criteria.andIn(property, Arrays.stream((Object[]) value).collect(Collectors.toList()));
                     } else if (value instanceof Iterable) {
-                        criteria.andIn(column, (Iterable<?>) value);
+                        criteria.andIn(property, (Iterable<?>) value);
                     } else {
                         throw new MapperException("操作[IN]必须是数组或集合类型");
                     }
                 }
                 break;
             case NOT_IN:
-                column = ((NotIn) fieldCondition.getAnnotation()).property();
+                property = ((NotIn) fieldCondition.getAnnotation()).property();
                 if (value.getClass().isArray()) {
-                    criteria.andIn(column, Arrays.stream((Object[]) value).collect(Collectors.toList()));
+                    criteria.andIn(property, Arrays.stream((Object[]) value).collect(Collectors.toList()));
                 } else if (value instanceof Iterable) {
-                    criteria.andIn(column, (Iterable<?>) value);
+                    criteria.andIn(property, (Iterable<?>) value);
                 } else {
                     throw new MapperException("操作[NOT IN]必须是数组或集合类型");
                 }
@@ -191,19 +192,19 @@ public class DefaultConditionParser implements ConditionParser {
                 }
                 break;
             case IS_NULL:
-                column = ((IsNull) fieldCondition.getAnnotation()).property();
-                criteria.andIsNull(column);
+                property = ((IsNull) fieldCondition.getAnnotation()).property();
+                criteria.andIsNull(property);
                 break;
             case IS_NOT_NULL:
-                column = ((IsNotNull) fieldCondition.getAnnotation()).property();
-                criteria.andIsNull(column);
+                property = ((IsNotNull) fieldCondition.getAnnotation()).property();
+                criteria.andIsNull(property);
                 break;
         }
     }
 
-    private <C> Object getValue(C condition, Field field) {
+    private Object getValue(Object obj, Field field) {
         try {
-            return field.get(condition);
+            return field.get(obj);
         } catch (IllegalAccessException e) {
             throw new MapperException("反射字段值错误", e);
         }

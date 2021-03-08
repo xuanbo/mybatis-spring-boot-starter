@@ -1,4 +1,4 @@
-package tk.fishfish.mybatis.annotation;
+package tk.fishfish.mybatis.condition.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,14 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * NOT LIKE
+ * IS NOT NULL
  *
  * @author 奔波儿灞
  * @version 1.3.0
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NotLike {
+public @interface IsNotNull {
 
     /**
      * 字段名
@@ -21,22 +21,5 @@ public @interface NotLike {
      * @return 字段名
      */
     String property();
-
-    /**
-     * 模糊策略
-     *
-     * @return 默认左模糊
-     */
-    Policy policy() default Policy.LEFT;
-
-    enum Policy {
-
-        LEFT,
-
-        RIGHT,
-
-        ALL,
-
-    }
 
 }

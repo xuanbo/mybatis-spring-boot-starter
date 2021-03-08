@@ -58,21 +58,35 @@ public interface BaseService<T extends Entity> {
     boolean exist(Object condition);
 
     /**
-     * 新增
+     * 新增，所有字段写入
      *
      * @param entity 实体
      */
     void insert(T entity);
 
     /**
-     * 更新
+     * 新增，字段不为null写入
+     *
+     * @param entity 实体
+     */
+    void insertSelective(T entity);
+
+    /**
+     * 更新，所有字段写入
      *
      * @param entity 实体
      */
     void update(T entity);
 
     /**
-     * 新增或更新
+     * 更新，字段不为null写入
+     *
+     * @param entity 实体
+     */
+    void updateSelective(T entity);
+
+    /**
+     * 新增或更新，主键存在调用update，不存在调用insert
      *
      * @param entity 实体
      */

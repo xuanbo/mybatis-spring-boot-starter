@@ -6,8 +6,11 @@ import org.springframework.util.StringUtils;
 import tk.fishfish.mybatis.domain.Page;
 import tk.fishfish.mybatis.domain.Pageable;
 import tk.fishfish.mybatis.domain.Sort;
+import tk.fishfish.mybatis.entity.Entity;
 import tk.mybatis.mapper.MapperException;
 import tk.mybatis.mapper.entity.Condition;
+import tk.mybatis.mapper.entity.EntityColumn;
+import tk.mybatis.mapper.mapperhelper.EntityHelper;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -26,8 +29,8 @@ public final class PageHelper {
         com.github.pagehelper.PageHelper.startPage(page);
     }
 
-    public static void startPage(Pageable pageable, Map<String, String> entityPropertyColumns) {
-        IPage page = convert(pageable, entityPropertyColumns);
+    public static void startPage(Pageable pageable, Class<? extends Entity> entityClazz) {
+        IPage page = convert(pageable, entityClazz);
         com.github.pagehelper.PageHelper.startPage(page);
     }
 
@@ -35,8 +38,8 @@ public final class PageHelper {
         return new PageImpl(pageable.getPage(), pageable.getSize(), orderBy(pageable.getSorts()));
     }
 
-    public static IPage convert(Pageable pageable, Map<String, String> entityPropertyColumns) {
-        return new PageImpl(pageable.getPage(), pageable.getSize(), orderBy(pageable.getSorts(), entityPropertyColumns));
+    public static IPage convert(Pageable pageable, Class<? extends Entity> entityClazz) {
+        return new PageImpl(pageable.getPage(), pageable.getSize(), orderBy(pageable.getSorts(), entityClazz));
     }
 
     public static <T> Page<T> convert(PageInfo<T> info) {
@@ -61,10 +64,11 @@ public final class PageHelper {
         }).collect(Collectors.joining(", "));
     }
 
-    public static String orderBy(Sort[] sorts, Map<String, String> entityPropertyColumns) {
+    public static String orderBy(Sort[] sorts, Class<? extends Entity> entityClazz) {
         if (sorts == null || sorts.length == 0) {
             return null;
         }
+        Map<String, String> entityPropertyColumns = entityPropertyColumns(entityClazz);
         return Arrays.stream(sorts).map(sort -> {
             String column = entityPropertyColumns.get(sort.getName());
             if (column == null) {
@@ -84,11 +88,15 @@ public final class PageHelper {
         }
     }
 
-    public static void setOrderBy(Condition condition, Sort[] sorts, Map<String, String> entityPropertyColumns) {
-        String orderBy = PageHelper.orderBy(sorts, entityPropertyColumns);
+    public static void setOrderBy(Condition condition, Sort[] sorts, Class<? extends Entity> entityClazz) {
+        String orderBy = PageHelper.orderBy(sorts, entityClazz);
         if (!StringUtils.isEmpty(orderBy)) {
             condition.setOrderByClause(orderBy);
         }
+    }
+
+    private static Map<String, String> entityPropertyColumns(Class<? extends Entity> entityClazz) {
+        return EntityHelper.getColumns(entityClazz).stream().collect(Collectors.toMap(EntityColumn::getProperty, EntityColumn::getColumn));
     }
 
 }

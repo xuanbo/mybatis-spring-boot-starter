@@ -2,7 +2,9 @@ package tk.fishfish.mybatis.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import tk.fishfish.mybatis.entity.enums.Sex;
 
+import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
@@ -24,7 +26,8 @@ public class User extends Entity {
 
     private String password;
 
-    private Integer sex;
+    @Column(name = "sex")
+    private Sex sex;
 
     private String email;
 

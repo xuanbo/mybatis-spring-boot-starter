@@ -5,7 +5,6 @@
 ## 依赖
 
 ```xml
-
 <dependency>
     <groupId>tk.fishfish</groupId>
     <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -54,12 +53,52 @@ mybatis:
     not-empty: true
 ```
 
+### enum
+
+> 通过 @EnableEnumTypes 开启该特性
+
+定义枚举，实现 EnumType 接口，其中 value 为数据库存储值。
+
+```java
+@Getter
+@RequiredArgsConstructor
+public enum Sex implements EnumType {
+
+    MAN("男", "0"),
+
+    WOMAN("女", "1"),
+
+    SECRET("保密", "2"),
+
+    ;
+
+    private final String name;
+    private final String value;
+
+}
+```
+
+特别地，会注册 jackson 枚举序列化、反序列化类。
+
+会序列化为：
+
+```json5
+{
+  // 枚举字段会序列化为一个对象
+  "sex": {
+    "name": "男",
+    "value": "0"
+  }
+}
+```
+
+反序列化时，可接收 name、value 以及枚举名称（男、0、MAN）。
+
 ### entity
 
 定义实体，字段默认驼峰转下划线策略。
 
 ```java
-
 @Data
 @Table(name = "oh_user")
 @EqualsAndHashCode(callSuper = true)
@@ -71,7 +110,8 @@ public class User extends Entity {
 
     private String password;
 
-    private Integer sex;
+    @Column(name = "sex")
+    private Sex sex;
 
     private String email;
 
@@ -87,12 +127,13 @@ public class User extends Entity {
 }
 ```
 
+对于枚举类型，必须增加 @Column 注解标注实体字段。
+
 ### condition
 
 定义查询条件。
 
 ```java
-
 @Data
 public class UserCondition {
 
@@ -100,7 +141,7 @@ public class UserCondition {
     private String username;
 
     @Eq(property = "sex")
-    private Integer sex;
+    private Sex sex;
 
     @Like(property = "email")
     private String email;
@@ -118,7 +159,6 @@ public class UserCondition {
 底层为 tk mapper 通用数据库 CRUD 方法
 
 ```java
-
 @Mapper
 public interface UserRepository extends Repository<User> {
 }
@@ -134,7 +174,6 @@ public interface UserService extends BaseService<User> {
 ```
 
 ```java
-
 @Service
 public class UserServiceImpl extends BaseServiceImpl<User> implements UserService {
 }
@@ -145,7 +184,6 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
 继承部分通用 API 接口
 
 ```java
-
 @RestController
 @RequestMapping("/v1/user")
 @RequiredArgsConstructor
@@ -181,6 +219,7 @@ public class UserController extends BaseController<User> {
 修改：
 
 - 新增 Base Controller
+- 枚举类型支持 @EnableEnumTypes
 
 版本：
 

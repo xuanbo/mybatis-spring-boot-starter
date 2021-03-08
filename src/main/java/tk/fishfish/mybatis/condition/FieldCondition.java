@@ -1,6 +1,5 @@
 package tk.fishfish.mybatis.condition;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.lang.annotation.Annotation;
